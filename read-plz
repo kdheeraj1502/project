@@ -1,0 +1,42 @@
+https://www.baeldung.com/spring-valid-vs-validated  @SuperBuilder
+https://www.baeldung.com/lombok-builder-inheritance  @Validated group validation
+
+@Test
+public void givenSaveBasicInfo_whenCorrectInput_thenSuccess() throws Exception {
+    this.mockMvc.perform(MockMvcRequestBuilders.post("/saveBasicInfo")
+      .accept(MediaType.TEXT_HTML)
+      .param("name", "test123")
+      .param("password", "pass"))
+      .andExpect(view().name("success"))
+      .andExpect(status().isOk())
+      .andDo(print());
+}
+public class UserAccount {
+    
+    @NotNull
+    @Size(min = 4, max = 15)
+    private String password;
+ 
+    @NotBlank
+    private String name;
+ 
+    @Min(value = 18, message = "Age should not be less than 18")
+    private int age;
+ 
+    @NotBlank
+    private String phone;
+    
+    // standard constructors / setters / getters / toString   
+    
+}
+
+@RequestMapping(value = "/saveBasicInfo", method = RequestMethod.POST)
+public String saveBasicInfo(
+  @Valid @ModelAttribute("useraccount") UserAccount useraccount, 
+  BindingResult result, 
+  ModelMap model) {
+    if (result.hasErrors()) {
+        return "error";
+    }
+    return "success";
+}
